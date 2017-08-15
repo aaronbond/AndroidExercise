@@ -30,6 +30,9 @@ dependencies {
   androidTestImplementation 'com.android.support.test:runner:1.0.0'
   androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.0'
 
+  testImplementation 'org.mockito:mockito-core:2.8.47'
+  androidTestImplementation 'org.mockito:mockito-android:2.7.19'
+
   //Picasso
   implementation 'com.squareup.picasso:picasso:2.5.2'
 

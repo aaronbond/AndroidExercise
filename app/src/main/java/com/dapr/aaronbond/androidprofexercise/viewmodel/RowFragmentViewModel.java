@@ -21,14 +21,7 @@ public class RowFragmentViewModel extends ViewModel {
     init();
   }
 
-  //todo dagger injection
   public void init() {
-//    rowRepo = new RowsRepository(new Retrofit.Builder()
-//        .baseUrl("http://api.myjson.com/bins/")
-//        .addConverterFactory(GsonConverterFactory.create())
-//        .build()
-//        .create(WebService.class));
-
     rowsLiveData = rowRepo.getRows();
   }
 
