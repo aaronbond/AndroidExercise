@@ -9,5 +9,13 @@ public class MainActivity extends AppCompatActivity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
+
+    // Add product list fragment if this is first creation
+    if (savedInstanceState == null) {
+      RowFragment fragment = new RowFragment();
+
+      getSupportFragmentManager().beginTransaction()
+          .add(R.id.fragment_container, fragment, RowFragment.TAG).commit();
+    }
   }
 }
