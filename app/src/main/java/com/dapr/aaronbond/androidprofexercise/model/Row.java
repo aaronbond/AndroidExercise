@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class Row {
 
-  @SerializedName("title")
+  @SerializedName("titleText")
   @Expose
   private String title;
   @SerializedName("description")

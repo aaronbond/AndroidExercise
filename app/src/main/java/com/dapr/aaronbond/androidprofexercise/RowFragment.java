@@ -37,6 +37,7 @@ public class RowFragment extends LifecycleFragment {
       }
     });
 //    mBinding.productsList.setAdapter(mProductAdapter);
+    binding.list.setAdapter(adapter);
 
     return binding.getRoot();
   }
