@@ -1,36 +1,39 @@
 package com.dapr.aaronbond.androidprofexercise.viewmodel;
 
 
-import android.app.Application;
-import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.ViewModel;
 
 import com.dapr.aaronbond.androidprofexercise.model.Rows;
 import com.dapr.aaronbond.androidprofexercise.repository.RowsRepository;
-import com.dapr.aaronbond.androidprofexercise.service.WebService;
 
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
+import javax.inject.Inject;
 
-public class RowFragmentViewModel extends AndroidViewModel {
+public class RowFragmentViewModel extends ViewModel {
 
   private LiveData<Rows> rowsLiveData;
+
   private RowsRepository rowRepo;
 
-  public RowFragmentViewModel(Application application) {
-    super(application);
+  @Inject
+  public RowFragmentViewModel(RowsRepository rowRepo) {
+    this.rowRepo = rowRepo;
     init();
   }
 
   //todo dagger injection
   public void init() {
-    rowRepo = new RowsRepository(new Retrofit.Builder()
-        .baseUrl("http://api.myjson.com/bins/")
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
-        .create(WebService.class));
+//    rowRepo = new RowsRepository(new Retrofit.Builder()
+//        .baseUrl("http://api.myjson.com/bins/")
+//        .addConverterFactory(GsonConverterFactory.create())
+//        .build()
+//        .create(WebService.class));
 
     rowsLiveData = rowRepo.getRows();
+  }
+
+  public void refreshItems() {
+    rowRepo.refreshRows();
   }
 
   public LiveData<Rows> getRows() {

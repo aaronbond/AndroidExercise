@@ -15,12 +15,13 @@ public class RowsRepository {
 
   private WebService webService;
 
+  final MutableLiveData<Rows> data = new MutableLiveData<>();
+
   public RowsRepository(WebService webService) {
     this.webService = webService;
   }
 
   public LiveData<Rows> getRows() {
-    final MutableLiveData<Rows> data = new MutableLiveData<>();
 
     webService.getRows().enqueue(new Callback<Rows>() {
       @Override
@@ -34,6 +35,20 @@ public class RowsRepository {
       }
     });
     return data;
+  }
+
+  public void refreshRows() {
+    webService.getRows().enqueue(new Callback<Rows>() {
+      @Override
+      public void onResponse(Call<Rows> call, Response<Rows> response) {
+        data.setValue(response.body());
+      }
+
+      @Override
+      public void onFailure(Call<Rows> call, Throwable t) {
+        //this is where you would handle the error case
+      }
+    });
   }
 
 }

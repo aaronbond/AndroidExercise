@@ -2,10 +2,12 @@ package com.dapr.aaronbond.androidprofexercise;
 
 import android.arch.lifecycle.LifecycleFragment;
 import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +18,8 @@ import com.dapr.aaronbond.androidprofexercise.model.Rows;
 import com.dapr.aaronbond.androidprofexercise.util.RowAdapter;
 import com.dapr.aaronbond.androidprofexercise.viewmodel.RowFragmentViewModel;
 
+import javax.inject.Inject;
+
 public class RowFragment extends LifecycleFragment {
 
   public static final String TAG = "RowFragment";
@@ -23,6 +27,13 @@ public class RowFragment extends LifecycleFragment {
   private FragmentRowListBinding binding;
 
   private RowAdapter adapter;
+
+  private RowFragmentViewModel viewModel;
+
+  private SwipeRefreshLayout swipe;
+
+  @Inject
+  ViewModelProvider.Factory viewModelFactory;
 
   @Nullable
   @Override
@@ -33,10 +44,9 @@ public class RowFragment extends LifecycleFragment {
     adapter = new RowAdapter(new RowAdapter.RowClickCallBack() {
       @Override
       public void onClick(Row row) {
-        //no op
+        //no op not specified in document
       }
-    });
-//    mBinding.productsList.setAdapter(mProductAdapter);
+    }, this.getContext());
     binding.list.setAdapter(adapter);
 
     return binding.getRoot();
@@ -45,10 +55,23 @@ public class RowFragment extends LifecycleFragment {
   @Override
   public void onActivityCreated(@Nullable Bundle savedInstanceState) {
     super.onActivityCreated(savedInstanceState);
-    final RowFragmentViewModel viewModel =
-        ViewModelProviders.of(this).get(RowFragmentViewModel.class);
+
+    ((BasicApp)getActivity().getApplication()).getBasicAppComponent().inject(this);
+
+    viewModel =
+        ViewModelProviders.of(this, viewModelFactory).get(RowFragmentViewModel.class);
 
     subscribeUi(viewModel);
+
+    swipe = getView().findViewById(R.id.swipeRefreshLayout);
+
+    swipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+      @Override
+      public void onRefresh() {
+        //quick and dirty
+        viewModel.refreshItems();
+      }
+    });
   }
 
   private void subscribeUi(RowFragmentViewModel viewModel) {
@@ -56,6 +79,10 @@ public class RowFragment extends LifecycleFragment {
     viewModel.getRows().observe(this, new Observer<Rows>() {
       @Override
       public void onChanged(@Nullable Rows rows) {
+
+        if (null != swipe) {
+          swipe.setRefreshing(false);
+        }
         if (rows != null) {
           binding.setIsLoading(false);
           adapter.setRowList(rows.getRows());

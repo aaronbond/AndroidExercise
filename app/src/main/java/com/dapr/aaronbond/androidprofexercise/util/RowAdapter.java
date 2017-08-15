@@ -1,15 +1,18 @@
 package com.dapr.aaronbond.androidprofexercise.util;
 
+import android.content.Context;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.dapr.aaronbond.androidprofexercise.R;
 import com.dapr.aaronbond.androidprofexercise.model.Row;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 import java.util.Objects;
@@ -18,9 +21,11 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.ViewHolder> {
 
   private List<Row> values;
   private RowClickCallBack callBack;
+  private Context context;
 
-  public RowAdapter(RowClickCallBack callBack) {
+  public RowAdapter(RowClickCallBack callBack, Context context) {
     this.callBack = callBack;
+    this.context = context;
   }
 
   public void setRowList(final List<Row> rows) {
@@ -71,26 +76,29 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.ViewHolder> {
 
   @Override
   public void onBindViewHolder(final ViewHolder holder, int position) {
-//    holder.itemNumber = mValues.get(position);
-//    holder.titleText.setText(mValues.get(position).id);
-//    holder.contentText.setText(mValues.get(position).content);
-//
-//    holder.view.setOnClickListener(new View.OnClickListener() {
-//      @Override
-//      public void onClick(View v) {
-//        if (null != mListener) {
-//          // Notify the active callbacks interface (the activity, if the
-//          // fragment is attached to one) that an item has been selected.
-//          mListener.onListFragmentInteraction(holder.itemNumber);
-//        }
-//      }
-//    });
-
     holder.itemNumber = values.get(position);
     holder.titleText.setText(values.get(position).getTitle());
     holder.contentText.setText(values.get(position).getDescription());
 
-    //todo imageview insertion
+    final String imageUrl = values.get(position).getImageHref();
+
+//    if (null != imageUrl && !imageUrl.isEmpty()) {
+//      Picasso.with(context).load(imageUrl).into(holder.imageView);
+//    }
+
+    final ImageView imageView = holder.imageView;
+    ViewTreeObserver observer = imageView.getViewTreeObserver();
+
+    //ensure that imageurl is not null or empty
+    if (null != imageUrl && !imageUrl.isEmpty() ) {
+      observer.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+        @Override
+        public boolean onPreDraw() {
+          Picasso.with(context).load(imageUrl).fit().centerCrop().into(imageView);
+          return true;
+        }
+      });
+    }
 
     holder.view.setOnClickListener(new View.OnClickListener() {
       @Override
@@ -104,7 +112,7 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.ViewHolder> {
 
   @Override
   public int getItemCount() {
-    if(null == values) {
+    if (null == values) {
       return 0;
     }
     return values.size();

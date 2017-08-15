@@ -5,19 +5,26 @@
         xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="isLoading"
-            type="boolean" />
+            type="boolean"/>
     </data>
 
-<android.support.v7.widget.RecyclerView
-    android:id="@+id/list"
-    android:name="com.dapr.aaronbond.androidexercise.fragment.RowFragment"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_marginLeft="16dp"
-    android:layout_marginRight="16dp"
-    app:layoutManager="LinearLayoutManager"
-    tools:listitem="@layout/fragment_row_item"/>
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefreshLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/list"
+            android:name="com.dapr.aaronbond.androidexercise.fragment.RowFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            app:layoutManager="LinearLayoutManager"
+            tools:listitem="@layout/fragment_row_item"/>
+    </android.support.v4.widget.SwipeRefreshLayout>
 
 </layout>
