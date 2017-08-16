@@ -94,7 +94,7 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.ViewHolder> {
       observer.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
         @Override
         public boolean onPreDraw() {
-          Picasso.with(context).load(imageUrl).fit().centerCrop().into(imageView);
+          Picasso.with(context).load(imageUrl).fit().centerInside().into(imageView);
           return true;
         }
       });
